@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hi from Mariam ✨</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <style>
+        * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 8s ease infinite;
+}
+
+.container {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-shapes {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    animation: float 6s ease-in-out infinite;
+}
+
+.shape-1 {
+    width: 80px;
+    height: 80px;
+    top: 20%;
+    left: 10%;
+    animation-delay: -1s;
+    background: rgba(255, 182, 193, 0.3);
+}
+
+.shape-2 {
+    width: 120px;
+    height: 120px;
+    top: 60%;
+    right: 15%;
+    animation-delay: -3s;
+    background: rgba(173, 216, 230, 0.3);
+}
+
+.shape-3 {
+    width: 60px;
+    height: 60px;
+    bottom: 30%;
+    left: 20%;
+    animation-delay: -2s;
+    background: rgba(221, 160, 221, 0.3);
+}
+
+.shape-4 {
+    width: 100px;
+    height: 100px;
+    top: 15%;
+    right: 30%;
+    animation-delay: -4s;
+    background: rgba(255, 218, 185, 0.3);
+}
+
+.shape-5 {
+    width: 40px;
+    height: 40px;
+    bottom: 20%;
+    right: 25%;
+    animation-delay: -5s;
+    background: rgba(152, 251, 152, 0.3);
+}
+
+.content {
+    text-align: center;
+    z-index: 10;
+    position: relative;
+}
+
+.avatar {
+    margin-bottom: 30px;
+    animation: bounceIn 1s ease-out;
+}
+
+.avatar-ring {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b9d, #c44569, #f8b500);
+    padding: 4px;
+    position: relative;
+    animation: rotate 10s linear infinite;
+}
+
+.avatar-ring::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b9d, #c44569, #f8b500);
+    opacity: 0.3;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.avatar-emoji {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    z-index: 2;
+}
+
+.greeting {
+    font-size: 4rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(30px);
+    animation: slideUp 1s ease-out 0.5s forwards;
+}
+
+.subtitle {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 300;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: slideUp 1s ease-out 1s forwards;
+}
+
+.sparkles {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.sparkle {
+    position: absolute;
+    color: #ffd700;
+    font-size: 1.5rem;
+    animation: sparkleFloat 3s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* Animations */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0%, 100% { 
+        transform: translateY(0px) rotate(0deg); 
+    }
+    33% { 
+        transform: translateY(-20px) rotate(120deg); 
+    }
+    66% { 
+        transform: translateY(10px) rotate(240deg); 
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.3;
+    }
+    50% { 
+        transform: scale(1.1);
+        opacity: 0.1;
+    }
+}
+
+@keyframes sparkleFloat {
+    0%, 100% {
+        transform: translateY(0px) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-20px) scale(1.2);
+        opacity: 0.7;
+    }
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .greeting {
+        font-size: 2.5rem;
+    }
+    
+    .subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .avatar-ring {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .avatar-emoji {
+        font-size: 2.5rem;
+    }
+    
+    .shape {
+        opacity: 0.5;
+    }
+}
+    </style>
+    <div class="container">
+        <div class="floating-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
+            <div class="shape shape-5"></div>
+        </div>
+        
+        <div class="content">
+            <div class="avatar">
+                <div class="avatar-ring">
+                    <span class="avatar-emoji">👋</span>
+                </div>
+            </div>
+            
+            <h1 class="greeting" id="greeting">Hi,Mariam!</h1>
+            <p class="subtitle" id="subtitle">How You Doing✨</p>
+            
+            <div class="sparkles" id="sparkles"></div>
+        </div>
+    </div>
+    <script>
+        // Create sparkles around the content
+function createSparkle() {
+    const sparklesContainer = document.getElementById('sparkles');
+    const sparkle = document.createElement('div');
+    sparkle.className = 'sparkle';
+    sparkle.innerHTML = '✨';
+    
+    // Random position around the center
+    const angle = Math.random() * 360;
+    const distance = 100 + Math.random() * 100;
+    const x = Math.cos(angle * Math.PI / 180) * distance;
+    const y = Math.sin(angle * Math.PI / 180) * distance;
+    
+    sparkle.style.left = x + 'px';
+    sparkle.style.top = y + 'px';
+    sparkle.style.animationDelay = Math.random() * 2 + 's';
+    sparkle.style.animationDuration = (2 + Math.random() * 2) + 's';
+    
+    sparklesContainer.appendChild(sparkle);
+    
+    // Remove sparkle after animation
+    setTimeout(() => {
+        if (sparkle.parentNode) {
+            sparkle.parentNode.removeChild(sparkle);
+        }
+    }, 4000);
+}
+
+// Create sparkles periodically
+setInterval(createSparkle, 800);
+
+// Add click interaction
+document.addEventListener('click', (e) => {
+    // Create burst of sparkles at click position
+    for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+            const sparkle = document.createElement('div');
+            sparkle.innerHTML = '✨';
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = e.clientX + (Math.random() - 0.5) * 100 + 'px';
+            sparkle.style.top = e.clientY + (Math.random() - 0.5) * 100 + 'px';
+            sparkle.style.fontSize = '1.5rem';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '1000';
+            sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                if (sparkle.parentNode) {
+                    sparkle.parentNode.removeChild(sparkle);
+                }
+            }, 2000);
+        }, i * 100);
+    }
+});
+
+// Typing effect for greeting
+const greeting = document.getElementById('greeting');
+const originalText = greeting.textContent;
+greeting.textContent = '';
+
+let i = 0;
+function typeWriter() {
+    if (i < originalText.length) {
+        greeting.textContent += originalText.charAt(i);
+        i++;
+        setTimeout(typeWriter, 100);
+    }
+}
+
+// Start typing effect after initial animation
+setTimeout(typeWriter, 1500);
+
+// Add mouse move effect
+document.addEventListener('mousemove', (e) => {
+    const shapes = document.querySelectorAll('.shape');
+    const mouseX = e.clientX / window.innerWidth;
+    const mouseY = e.clientY / window.innerHeight;
+    
+    shapes.forEach((shape, index) => {
+        const speed = (index + 1) * 0.02;
+        const x = (mouseX - 0.5) * speed * 100;
+        const y = (mouseY - 0.5) * speed * 100;
+        
+        shape.style.transform = `translate(${x}px, ${y}px)`;
+    });
+});
+
+// Add loading animation
+window.addEventListener('load', () => {
+    document.body.style.opacity = '0';
+    document.body.style.transition = 'opacity 0.5s ease';
+    
+    setTimeout(() => {
+        document.body.style.opacity = '1';
+    }, 100);
+});
+
+// Console message
+console.log('👋 Hi there! This is Mariam\'s beautiful page ✨');
+
+    </script>
+</body>
+</html>
