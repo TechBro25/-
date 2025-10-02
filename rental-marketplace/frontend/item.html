@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Details - Rental Marketplace</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <h1><a href="/"><i class="fas fa-home"></i> RentMarket</a></h1>
+                </div>
+                <div class="nav-links">
+                    <a href="/">Home</a>
+                    <a href="/#categories">Categories</a>
+                    <div class="auth-buttons">
+                        <button id="loginBtn" class="btn btn-outline" onclick="showLoginModal()">Login</button>
+                        <button id="signupBtn" class="btn btn-primary" onclick="showSignupModal()">Sign Up</button>
+                        <div id="userMenu" class="user-menu" style="display: none;">
+                            <span id="userName"></span>
+                            <div class="dropdown">
+                                <button class="dropdown-btn"><i class="fas fa-user-circle"></i></button>
+                                <div class="dropdown-content">
+                                    <a href="#" onclick="showProfile()">Profile</a>
+                                    <a href="#" onclick="showMyItems()">My Items</a>
+                                    <a href="#" onclick="showMessages()">Messages</a>
+                                    <a href="#" onclick="logout()">Logout</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Item Details -->
+    <main class="item-page">
+        <div class="container">
+            <div id="loadingSpinner" class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i> Loading item details...
+            </div>
+            
+            <div id="itemContent" class="item-content" style="display: none;">
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb">
+                    <a href="/">Home</a>
+                    <span>/</span>
+                    <span id="breadcrumbCategory">Category</span>
+                    <span>/</span>
+                    <span id="breadcrumbTitle">Item</span>
+                </nav>
+
+                <div class="item-details">
+                    <div class="item-gallery">
+                        <div class="main-image">
+                            <img id="mainImage" src="" alt="Item Image">
+                        </div>
+                        <div class="thumbnail-images" id="thumbnailImages">
+                            <!-- Thumbnails will be loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="item-info">
+                        <div class="item-header">
+                            <h1 id="itemTitle">Item Title</h1>
+                            <div class="item-rating">
+                                <div class="stars" id="itemRating">
+                                    <!-- Stars will be loaded here -->
+                                </div>
+                                <span id="reviewCount">(0 reviews)</span>
+                            </div>
+                        </div>
+
+                        <div class="item-price">
+                            <span class="price" id="itemPrice">₦0</span>
+                            <span class="period">per day</span>
+                        </div>
+
+                        <div class="item-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="itemLocation">Location</span>
+                        </div>
+
+                        <div class="owner-info">
+                            <div class="owner-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="owner-details">
+                                <h4 id="ownerName">Owner Name</h4>
+                                <div class="owner-verified" id="ownerVerified" style="display: none;">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>Verified</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="item-actions">
+                            <button class="btn btn-primary btn-large" onclick="showRentModal()" id="rentButton">
+                                <i class="fas fa-calendar-check"></i>
+                                Rent Now
+                            </button>
+                            <button class="btn btn-outline" onclick="contactOwner()">
+                                <i class="fas fa-envelope"></i>
+                                Contact Owner
+                            </button>
+                        </div>
+
+                        <div class="deposit-info">
+                            <h4>Deposit Required</h4>
+                            <p class="deposit-amount" id="depositAmount">₦0</p>
+                            <p class="deposit-note">Refundable upon return in good condition</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Item Description -->
+                <section class="item-description">
+                    <h2>Description</h2>
+                    <div id="itemDescription">
+                        <!-- Description will be loaded here -->
+                    </div>
+                </section>
+
+                <!-- Availability Calendar -->
+                <section class="availability-section">
+                    <h2>Availability</h2>
+                    <div class="availability-calendar">
+                        <div class="calendar-header">
+                            <button class="btn btn-sm" onclick="previousMonth()">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h3 id="calendarMonth">Month Year</h3>
+                            <button class="btn btn-sm" onclick="nextMonth()">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            <!-- Calendar will be loaded here -->
+                        </div>
+                        <div class="calendar-legend">
+                            <div class="legend-item">
+                                <div class="legend-color available"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color booked"></div>
+                                <span>Booked</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reviews Section -->
+                <section class="reviews-section">
+                    <div class="reviews-header">
+                        <h2>Reviews</h2>
+                        <div class="review-summary">
+                            <div class="average-rating">
+                                <span class="rating-number" id="averageRating">0.0</span>
+                                <div class="stars" id="averageStars">
+                                    <!-- Stars will be loaded here -->
+                                </div>
+                            </div>
+                            <span class="total-reviews" id="totalReviews">0 reviews</span>
+                        </div>
+                    </div>
+
+                    <!-- Review Form (shown only if user can review) -->
+                    <div id="reviewForm" class="review-form" style="display: none;">
+                        <h3>Write a Review</h3>
+                        <form id="submitReviewForm">
+                            <div class="form-group">
+                                <label>Rating</label>
+                                <div class="rating-input">
+                                    <input type="radio" name="rating" value="5" id="star5">
+                                    <label for="star5"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="4" id="star4">
+                                    <label for="star4"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="3" id="star3">
+                                    <label for="star3"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="2" id="star2">
+                                    <label for="star2"><i class="fas fa-star"></i></label>
+                                    <input type="radio" name="rating" value="1" id="star1">
+                                    <label for="star1"><i class="fas fa-star"></i></label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="reviewComment">Your Review</label>
+                                <textarea id="reviewComment" rows="4" placeholder="Share your experience with this item..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
+                    </div>
+
+                    <!-- Reviews List -->
+                    <div class="reviews-list" id="reviewsList">
+                        <!-- Reviews will be loaded here -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Error Message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <h2>Item Not Found</h2>
+                <p>The item you're looking for doesn't exist or has been removed.</p>
+                <a href="/" class="btn btn-primary">Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Contact Support Button -->
+    <div class="contact-support">
+        <button class="support-btn" onclick="showContactModal()">
+            <i class="fas fa-headset"></i>
+            Contact Support
+        </button>
+    </div>
+
+    <!-- Modals (same as index.html) -->
+    
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('loginModal')">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+                <p class="form-footer">
+                    Don't have an account? <a href="#" onclick="closeModal('loginModal'); showSignupModal();">Sign up</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('signupModal')">&times;</span>
+            <h2>Create Account</h2>
+            <form id="signupForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signupFirstName">First Name</label>
+                        <input type="text" id="signupFirstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupLastName">Last Name</label>
+                        <input type="text" id="signupLastName" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">Phone Number</label>
+                    <input type="tel" id="signupPhone" placeholder="e.g., 08123456789">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                <p class="form-footer">
+                    Already have an account? <a href="#" onclick="closeModal('signupModal'); showLoginModal();">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Contact Support Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('contactModal')">&times;</span>
+            <h2>Contact Support</h2>
+            <div class="contact-options">
+                <div class="contact-option" onclick="showInboxModal()">
+                    <i class="fas fa-envelope"></i>
+                    <h3>Send Message</h3>
+                    <p>Send us a message through our inbox system</p>
+                </div>
+                <div class="contact-option" onclick="openWhatsApp()">
+                    <i class="fab fa-whatsapp"></i>
+                    <h3>WhatsApp</h3>
+                    <p>Chat with us on WhatsApp: 091-546-09327</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inbox Modal -->
+    <div id="inboxModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('inboxModal')">&times;</span>
+            <h2>Send Message</h2>
+            <form id="inboxForm">
+                <div class="form-group">
+                    <label for="messageSubject">Subject</label>
+                    <input type="text" id="messageSubject" placeholder="What do you need help with?">
+                </div>
+                <div class="form-group">
+                    <label for="messageText">Message</label>
+                    <textarea id="messageText" rows="5" placeholder="Describe your issue or question..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Rent Item Modal -->
+    <div id="rentModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('rentModal')">&times;</span>
+            <h2>Rent Item</h2>
+            <div id="rentItemDetails"></div>
+            <form id="rentForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="startDate">Start Date</label>
+                        <input type="date" id="startDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endDate">End Date</label>
+                        <input type="date" id="endDate" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="rentalMessage">Message to Owner (Optional)</label>
+                    <textarea id="rentalMessage" rows="3" placeholder="Any special requests or questions?"></textarea>
+                </div>
+                <div class="rental-summary">
+                    <div class="summary-row">
+                        <span>Daily Rate:</span>
+                        <span id="dailyRate">₦0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Number of Days:</span>
+                        <span id="numberOfDays">0</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Deposit:</span>
+                        <span id="depositAmount">₦0</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total Amount:</span>
+                        <span id="totalAmount">₦0</span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Request Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script>
+        // Initialize item page
+        document.addEventListener('DOMContentLoaded', function() {
+            const itemId = getItemIdFromUrl();
+            if (itemId) {
+                loadItemDetails(itemId);
+            } else {
+                showError();
+            }
+        });
+
+        function getItemIdFromUrl() {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2];
+        }
+
+        function showError() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
