@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rental Marketplace - Find & Rent Items in Nigeria</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <h1><i class="fas fa-store"></i> RentalMarket</h1>
+                </div>
+                <nav class="nav">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#categories" class="nav-link">Categories</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-actions">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="signupBtn" class="btn btn-primary">Sign Up</button>
+                    <div id="userMenu" class="user-menu" style="display: none;">
+                        <span id="userName"></span>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-menu">
+                                <a href="#" id="profileLink">Profile</a>
+                                <a href="#" id="myBookingsLink">My Bookings</a>
+                                <a href="#" id="myItemsLink">My Items</a>
+                                <a href="#" id="logoutLink">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Rent Anything You Need</h1>
+                <p>Find and rent items from trusted owners across Nigeria. From wedding dresses to electronics, we've got you covered.</p>
+                <div class="search-form">
+                    <div class="search-inputs">
+                        <input type="text" id="searchInput" placeholder="What are you looking for?">
+                        <select id="categorySelect">
+                            <option value="">All Categories</option>
+                            <option value="Wedding">Wedding</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Vehicles">Vehicles</option>
+                            <option value="Events">Events</option>
+                        </select>
+                        <input type="text" id="locationInput" placeholder="Location">
+                        <button id="searchBtn" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section id="categories" class="categories">
+        <div class="container">
+            <h2>Popular Categories</h2>
+            <div class="category-grid">
+                <div class="category-card" data-category="Wedding">
+                    <i class="fas fa-heart"></i>
+                    <h3>Wedding</h3>
+                    <p>Dresses, suits, decorations</p>
+                </div>
+                <div class="category-card" data-category="Electronics">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Electronics</h3>
+                    <p>Cameras, sound systems, DJ equipment</p>
+                </div>
+                <div class="category-card" data-category="Vehicles">
+                    <i class="fas fa-car"></i>
+                    <h3>Vehicles</h3>
+                    <p>Cars, buses, motorcycles</p>
+                </div>
+                <div class="category-card" data-category="Events">
+                    <i class="fas fa-calendar-alt"></i>
+                    <h3>Events</h3>
+                    <p>Tents, chairs, catering equipment</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Items -->
+    <section class="featured-items">
+        <div class="container">
+            <h2>Featured Items</h2>
+            <div id="itemsGrid" class="items-grid">
+                <!-- Items will be loaded here -->
+            </div>
+            <div class="load-more">
+                <button id="loadMoreBtn" class="btn btn-outline">Load More</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>Why Choose RentalMarket?</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure & Verified</h3>
+                    <p>All users are verified through our KYC process and WhatsApp verification system.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-star"></i>
+                    <h3>Quality Guaranteed</h3>
+                    <p>Every item is reviewed and rated by our community to ensure quality.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-headset"></i>
+                    <h3>24/7 Support</h3>
+                    <p>Get help anytime through our inbox or WhatsApp support at 091-546-09327.</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <h3>Fair Pricing</h3>
+                    <p>Competitive rental rates with transparent pricing and secure payments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Get in Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3>Contact Support</h3>
+                    <p>Need help? Contact us through our secure channels:</p>
+                    <div class="contact-methods">
+                        <button id="inboxBtn" class="contact-btn">
+                            <i class="fas fa-envelope"></i>
+                            Inbox Support
+                        </button>
+                        <a href="https://wa.me/2349154609327?text=Hi%20RentalMarket%20Support" target="_blank" class="contact-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp: 091-546-09327
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>RentalMarket</h3>
+                    <p>Your trusted rental marketplace in Nigeria.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#categories">Categories</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#" id="helpLink">Help Center</a></li>
+                        <li><a href="#" id="safetyLink">Safety Guidelines</a></li>
+                        <li><a href="#" id="termsLink">Terms of Service</a></li>
+                        <li><a href="#" id="privacyLink">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fab fa-whatsapp"></i> 091-546-09327</p>
+                    <p><i class="fas fa-envelope"></i> support@rentalmarket.ng</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 RentalMarket. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Contact Button -->
+    <div class="floating-contact">
+        <button id="floatingContactBtn" class="floating-btn">
+            <i class="fas fa-comments"></i>
+        </button>
+    </div>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupFirstName">First Name</label>
+                    <input type="text" id="signupFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupLastName">Last Name</label>
+                    <input type="text" id="signupLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">Phone (Optional)</label>
+                    <input type="tel" id="signupPhone">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inbox Modal -->
+    <div id="inboxModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Contact Support</h2>
+            <form id="inboxForm">
+                <div class="form-group">
+                    <label for="inboxSubject">Subject</label>
+                    <input type="text" id="inboxSubject" required>
+                </div>
+                <div class="form-group">
+                    <label for="inboxMessage">Message</label>
+                    <textarea id="inboxMessage" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Rent Modal -->
+    <div id="rentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Rent Item</h2>
+            <div id="rentItemDetails"></div>
+            <form id="rentForm">
+                <input type="hidden" id="rentItemId">
+                <div class="form-group">
+                    <label for="rentStartDate">Start Date</label>
+                    <input type="date" id="rentStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="rentEndDate">End Date</label>
+                    <input type="date" id="rentEndDate" required>
+                </div>
+                <div id="rentSummary"></div>
+                <button type="submit" class="btn btn-primary">Request Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/main.js"></script>
+</body>
+</html>

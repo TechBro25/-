@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - RentalMarket</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html"><h1><i class="fas fa-store"></i> RentalMarket Admin</h1></a>
+                </div>
+                <div class="header-actions">
+                    <div id="adminUserMenu" class="user-menu">
+                        <span id="adminUserName"></span>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-menu">
+                                <a href="#" id="adminLogoutLink">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Login Form -->
+    <div id="adminLoginForm" class="admin-login">
+        <div class="container">
+            <div class="login-card">
+                <h2>Admin Login</h2>
+                <form id="adminLoginFormElement">
+                    <div class="form-group">
+                        <label for="adminEmail">Email</label>
+                        <input type="email" id="adminEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" style="display: none;">
+        <div class="container">
+            <!-- Dashboard Stats -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <i class="fas fa-users"></i>
+                    <h3 id="totalUsers">0</h3>
+                    <p>Total Users</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-box"></i>
+                    <h3 id="totalItems">0</h3>
+                    <p>Total Items</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3 id="totalBookings">0</h3>
+                    <p>Total Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-clock"></i>
+                    <h3 id="pendingBookings">0</h3>
+                    <p>Pending Bookings</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-star"></i>
+                    <h3 id="totalReviews">0</h3>
+                    <p>Total Reviews</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3 id="pendingReviews">0</h3>
+                    <p>Pending Reviews</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-envelope"></i>
+                    <h3 id="unreadMessages">0</h3>
+                    <p>Unread Messages</p>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-id-card"></i>
+                    <h3 id="pendingKYC">0</h3>
+                    <p>Pending KYC</p>
+                </div>
+            </div>
+
+            <!-- Admin Navigation -->
+            <nav class="admin-nav">
+                <button class="admin-nav-btn active" data-section="bookings">
+                    <i class="fas fa-calendar-check"></i> Bookings
+                </button>
+                <button class="admin-nav-btn" data-section="users">
+                    <i class="fas fa-users"></i> Users
+                </button>
+                <button class="admin-nav-btn" data-section="items">
+                    <i class="fas fa-box"></i> Items
+                </button>
+                <button class="admin-nav-btn" data-section="reviews">
+                    <i class="fas fa-star"></i> Reviews
+                </button>
+                <button class="admin-nav-btn" data-section="messages">
+                    <i class="fas fa-envelope"></i> Messages
+                </button>
+                <button class="admin-nav-btn" data-section="kyc">
+                    <i class="fas fa-id-card"></i> KYC
+                </button>
+            </nav>
+
+            <!-- Admin Content Sections -->
+            <div class="admin-content">
+                <!-- Bookings Section -->
+                <div id="bookingsSection" class="admin-section active">
+                    <h2>Manage Bookings</h2>
+                    <div class="section-filters">
+                        <select id="bookingStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div id="bookingsTable" class="admin-table">
+                        <!-- Bookings will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="usersSection" class="admin-section">
+                    <h2>Manage Users</h2>
+                    <div class="section-filters">
+                        <select id="userVerifiedFilter">
+                            <option value="">All Users</option>
+                            <option value="true">Verified</option>
+                            <option value="false">Unverified</option>
+                        </select>
+                    </div>
+                    <div id="usersTable" class="admin-table">
+                        <!-- Users will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Items Section -->
+                <div id="itemsSection" class="admin-section">
+                    <h2>Manage Items</h2>
+                    <div class="section-filters">
+                        <select id="itemAvailableFilter">
+                            <option value="">All Items</option>
+                            <option value="true">Available</option>
+                            <option value="false">Unavailable</option>
+                        </select>
+                    </div>
+                    <div id="itemsTable" class="admin-table">
+                        <!-- Items will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Reviews Section -->
+                <div id="reviewsSection" class="admin-section">
+                    <h2>Moderate Reviews</h2>
+                    <div class="section-filters">
+                        <select id="reviewApprovedFilter">
+                            <option value="">All Reviews</option>
+                            <option value="true">Approved</option>
+                            <option value="false">Pending</option>
+                        </select>
+                    </div>
+                    <div id="reviewsTable" class="admin-table">
+                        <!-- Reviews will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Messages Section -->
+                <div id="messagesSection" class="admin-section">
+                    <h2>View Messages</h2>
+                    <div class="section-filters">
+                        <select id="messageChannelFilter">
+                            <option value="">All Channels</option>
+                            <option value="inbox">Inbox</option>
+                            <option value="whatsapp">WhatsApp</option>
+                        </select>
+                    </div>
+                    <div id="messagesTable" class="admin-table">
+                        <!-- Messages will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- KYC Section -->
+                <div id="kycSection" class="admin-section">
+                    <h2>KYC Verification</h2>
+                    <div class="section-filters">
+                        <select id="kycStatusFilter">
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                    <div id="kycTable" class="admin-table">
+                        <!-- KYC documents will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Booking Details Modal -->
+    <div id="bookingDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Booking Details</h2>
+            <div id="bookingDetailsContent"></div>
+            <div class="modal-actions">
+                <button id="approveBookingBtn" class="btn btn-success">Approve</button>
+                <button id="rejectBookingBtn" class="btn btn-danger">Reject</button>
+                <button id="completeBookingBtn" class="btn btn-primary">Mark Complete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Details Modal -->
+    <div id="reviewDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Review Details</h2>
+            <div id="reviewDetailsContent"></div>
+            <div class="modal-actions">
+                <button id="approveReviewBtn" class="btn btn-success">Approve</button>
+                <button id="rejectReviewBtn" class="btn btn-danger">Reject</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KYC Details Modal -->
+    <div id="kycDetailsModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>KYC Verification</h2>
+            <div id="kycDetailsContent"></div>
+            <div class="modal-actions">
+                <button id="approveKYCBtn" class="btn btn-success">Approve</button>
+                <button id="rejectKYCBtn" class="btn btn-danger">Reject</button>
+                <button id="sendKYCCodeBtn" class="btn btn-primary">Send Verification Code</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/main.js"></script>
+    <script src="scripts/admin.js"></script>
+</body>
+</html>
