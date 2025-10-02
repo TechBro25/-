@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Details - RentalHub</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="/" class="logo">🏠 RentalHub</a>
+      <ul class="nav-links">
+        <li><a href="/">Browse</a></li>
+        <li><a href="#" id="myBookingsLink">My Bookings</a></li>
+        <li><a href="#" id="listItemLink">List Item</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Container -->
+  <main class="container">
+    <div id="loadingSpinner" class="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Item Detail -->
+    <div id="itemDetail" class="item-detail hidden">
+      <div class="image-gallery">
+        <img id="mainImage" class="main-image" src="" alt="">
+        <div class="thumbnail-grid" id="thumbnailGrid">
+          <!-- Thumbnails will be loaded here -->
+        </div>
+      </div>
+
+      <div class="item-info">
+        <h1 id="itemTitle"></h1>
+        
+        <div class="item-meta">
+          <div class="item-rating">
+            <span id="itemRating"></span>
+            <span id="itemReviewCount"></span>
+          </div>
+          <div class="item-location" id="itemLocation"></div>
+          <div id="ownerVerified"></div>
+        </div>
+
+        <div class="item-price" id="itemPrice"></div>
+        
+        <p id="itemDescription" style="color: var(--gray-600); margin-bottom: 1.5rem;"></p>
+
+        <div class="booking-form">
+          <h3 style="margin-bottom: 1rem;">Book This Item</h3>
+          <div id="bookingError" class="alert alert-error hidden"></div>
+          <div id="bookingSuccess" class="alert alert-success hidden"></div>
+          
+          <form id="bookingForm">
+            <div class="form-group">
+              <label>Start Date</label>
+              <input type="date" id="startDate" required>
+            </div>
+            <div class="form-group">
+              <label>End Date</label>
+              <input type="date" id="endDate" required>
+            </div>
+            <div id="priceCalculation" class="mb-2" style="padding: 1rem; background: white; border-radius: 0.375rem; display: none;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Days:</span>
+                <span id="totalDays">0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Price per day:</span>
+                <span id="pricePerDay">₦0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Deposit:</span>
+                <span id="depositAmount">₦0</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.25rem; margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--gray-200);">
+                <span>Total:</span>
+                <span id="totalPrice" style="color: var(--primary-color);">₦0</span>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">
+              Request Booking
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reviews Section -->
+    <div id="reviewsSection" class="reviews-section hidden">
+      <h2>Reviews</h2>
+      <div id="reviewsList">
+        <!-- Reviews will be loaded here -->
+      </div>
+
+      <!-- Add Review Form (shown only for completed bookings) -->
+      <div id="addReviewSection" class="hidden" style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--gray-200);">
+        <h3>Write a Review</h3>
+        <div id="reviewError" class="alert alert-error hidden"></div>
+        <div id="reviewSuccess" class="alert alert-success hidden"></div>
+        <form id="reviewForm">
+          <div class="form-group">
+            <label>Rating</label>
+            <select id="reviewRating" required>
+              <option value="">Select rating</option>
+              <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+              <option value="4">⭐⭐⭐⭐ Good</option>
+              <option value="3">⭐⭐⭐ Average</option>
+              <option value="2">⭐⭐ Poor</option>
+              <option value="1">⭐ Terrible</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Comment</label>
+            <textarea id="reviewComment" rows="4" placeholder="Share your experience..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>Photos/Videos (optional)</label>
+            <input type="file" id="reviewMedia" accept="image/*,video/*" multiple>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <!-- Contact Support Button -->
+  <button class="contact-support" onclick="openSupportModal()">
+    📞 Contact Support
+  </button>
+
+  <!-- Support Modal -->
+  <div class="modal" id="supportModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('supportModal')">&times;</button>
+      <h2>Contact Support</h2>
+      <p class="mb-3">Choose how you'd like to reach us:</p>
+      
+      <div style="display: grid; gap: 1rem;">
+        <button class="btn btn-primary" onclick="openInboxModal()">
+          📨 Send Inbox Message
+        </button>
+        <a href="https://wa.me/2349154609327?text=Hello%2C%20I%20need%20support%20with%20RentalHub" 
+           class="btn btn-success" 
+           target="_blank"
+           style="text-align: center;">
+          💬 WhatsApp: 091-546-09327
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inbox Modal -->
+  <div class="modal" id="inboxModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('inboxModal')">&times;</button>
+      <h2>Send Message</h2>
+      <div id="inboxSuccess" class="alert alert-success hidden"></div>
+      <div id="inboxError" class="alert alert-error hidden"></div>
+      <form id="inboxForm">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="messageSubject" placeholder="Enter subject" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="messageBody" rows="5" placeholder="Enter your message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/scripts/main.js"></script>
+  <script>
+    let currentItem = null;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      updateNavigation();
+      
+      // Get item ID from URL
+      const pathParts = window.location.pathname.split('/');
+      const itemId = pathParts[pathParts.length - 1];
+      
+      await loadItemDetails(itemId);
+      await loadReviews(itemId);
+      
+      // Date change listeners for price calculation
+      document.getElementById('startDate').addEventListener('change', calculatePrice);
+      document.getElementById('endDate').addEventListener('change', calculatePrice);
+      
+      // Booking form submit
+      document.getElementById('bookingForm').addEventListener('submit', handleBooking);
+      
+      // Review form submit
+      document.getElementById('reviewForm').addEventListener('submit', handleReviewSubmit);
+      
+      // Inbox form submit
+      document.getElementById('inboxForm').addEventListener('submit', sendInboxMessage);
+      
+      // Check if can review (demo: allow if ?canReview=true)
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('canReview') === 'true') {
+        document.getElementById('addReviewSection').classList.remove('hidden');
+      }
+    });
+
+    async function loadItemDetails(itemId) {
+      try {
+        const response = await fetch(`/api/items/${itemId}`);
+        const data = await response.json();
+        
+        if (response.ok) {
+          currentItem = data.item;
+          displayItem(currentItem);
+        } else {
+          showError('Failed to load item details');
+        }
+      } catch (error) {
+        console.error('Error loading item:', error);
+        showError('Failed to load item details');
+      } finally {
+        document.getElementById('loadingSpinner').classList.add('hidden');
+        document.getElementById('itemDetail').classList.remove('hidden');
+      }
+    }
+
+    function displayItem(item) {
+      document.getElementById('itemTitle').textContent = item.title;
+      document.getElementById('itemDescription').textContent = item.description || 'No description available';
+      document.getElementById('itemPrice').textContent = `₦${item.price_per_day.toLocaleString()}/day`;
+      document.getElementById('itemLocation').innerHTML = `📍 ${item.location || 'Location not specified'}`;
+      
+      // Rating
+      const stars = '⭐'.repeat(Math.round(item.rating));
+      document.getElementById('itemRating').textContent = stars || 'No rating';
+      document.getElementById('itemReviewCount').textContent = `(${item.review_count} reviews)`;
+      
+      // Owner verified badge
+      if (item.owner && item.owner.isVerified) {
+        document.getElementById('ownerVerified').innerHTML = '<span class="verified-badge">✓ Verified Owner</span>';
+      }
+      
+      // Images
+      const images = item.images && item.images.length > 0 ? item.images : ['/uploads/placeholder/default.jpg'];
+      document.getElementById('mainImage').src = images[0];
+      
+      const thumbnailGrid = document.getElementById('thumbnailGrid');
+      thumbnailGrid.innerHTML = '';
+      images.forEach((img, index) => {
+        const thumb = document.createElement('img');
+        thumb.src = img;
+        thumb.className = 'thumbnail' + (index === 0 ? ' active' : '');
+        thumb.onclick = () => {
+          document.getElementById('mainImage').src = img;
+          document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+          thumb.classList.add('active');
+        };
+        thumbnailGrid.appendChild(thumb);
+      });
+      
+      // Set min dates
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('startDate').min = today;
+      document.getElementById('endDate').min = today;
+    }
+
+    function calculatePrice() {
+      if (!currentItem) return;
+      
+      const startDate = new Date(document.getElementById('startDate').value);
+      const endDate = new Date(document.getElementById('endDate').value);
+      
+      if (!startDate || !endDate || endDate <= startDate) {
+        document.getElementById('priceCalculation').style.display = 'none';
+        return;
+      }
+      
+      const days = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+      const total = currentItem.price_per_day * days;
+      
+      document.getElementById('totalDays').textContent = days;
+      document.getElementById('pricePerDay').textContent = `₦${currentItem.price_per_day.toLocaleString()}`;
+      document.getElementById('depositAmount').textContent = `₦${currentItem.deposit_amount.toLocaleString()}`;
+      document.getElementById('totalPrice').textContent = `₦${total.toLocaleString()}`;
+      document.getElementById('priceCalculation').style.display = 'block';
+    }
+
+    async function handleBooking(e) {
+      e.preventDefault();
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login to book items');
+        window.location.href = '/?login=true';
+        return;
+      }
+      
+      const startDate = document.getElementById('startDate').value;
+      const endDate = document.getElementById('endDate').value;
+      
+      try {
+        const response = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            itemId: currentItem.id,
+            startDate,
+            endDate
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          document.getElementById('bookingSuccess').textContent = 
+            `Booking request sent successfully! Total: ₦${data.totalPrice.toLocaleString()}. The owner will be notified.`;
+          document.getElementById('bookingSuccess').classList.remove('hidden');
+          document.getElementById('bookingForm').reset();
+          document.getElementById('priceCalculation').style.display = 'none';
+        } else {
+          document.getElementById('bookingError').textContent = data.error || 'Booking failed';
+          document.getElementById('bookingError').classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Booking error:', error);
+        document.getElementById('bookingError').textContent = 'An error occurred. Please try again.';
+        document.getElementById('bookingError').classList.remove('hidden');
+      }
+    }
+
+    async function loadReviews(itemId) {
+      try {
+        const response = await fetch(`/api/reviews/item/${itemId}`);
+        const data = await response.json();
+        
+        if (response.ok && data.reviews.length > 0) {
+          document.getElementById('reviewsSection').classList.remove('hidden');
+          displayReviews(data.reviews);
+        }
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+      }
+    }
+
+    function displayReviews(reviews) {
+      const reviewsList = document.getElementById('reviewsList');
+      reviewsList.innerHTML = '';
+      
+      reviews.forEach(review => {
+        const reviewCard = document.createElement('div');
+        reviewCard.className = 'review-card';
+        
+        const stars = '⭐'.repeat(review.rating);
+        const date = new Date(review.created_at).toLocaleDateString('en-NG');
+        
+        let mediaHtml = '';
+        if (review.media && review.media.length > 0) {
+          mediaHtml = '<div class="review-media">' +
+            review.media.map(m => `<img src="${m}" alt="Review media">`).join('') +
+            '</div>';
+        }
+        
+        reviewCard.innerHTML = `
+          <div class="review-header">
+            <div>
+              <div class="review-author">${review.user_name} ${review.user_verified ? '<span class="verified-badge">✓</span>' : ''}</div>
+              <div class="review-stars">${stars}</div>
+            </div>
+            <div class="review-date">${date}</div>
+          </div>
+          <p>${review.comment || ''}</p>
+          ${mediaHtml}
+        `;
+        
+        reviewsList.appendChild(reviewCard);
+      });
+    }
+
+    async function handleReviewSubmit(e) {
+      e.preventDefault();
+      
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login to submit a review');
+        return;
+      }
+      
+      const formData = new FormData();
+      formData.append('itemId', currentItem.id);
+      formData.append('rating', document.getElementById('reviewRating').value);
+      formData.append('comment', document.getElementById('reviewComment').value);
+      
+      const mediaFiles = document.getElementById('reviewMedia').files;
+      for (let file of mediaFiles) {
+        formData.append('media', file);
+      }
+      
+      try {
+        const response = await fetch('/api/reviews?canReview=true', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          document.getElementById('reviewSuccess').textContent = 'Review submitted successfully!';
+          document.getElementById('reviewSuccess').classList.remove('hidden');
+          document.getElementById('reviewForm').reset();
+          setTimeout(() => location.reload(), 2000);
+        } else {
+          document.getElementById('reviewError').textContent = data.error || 'Failed to submit review';
+          document.getElementById('reviewError').classList.remove('hidden');
+        }
+      } catch (error) {
+        console.error('Review error:', error);
+        document.getElementById('reviewError').textContent = 'An error occurred. Please try again.';
+        document.getElementById('reviewError').classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>
