@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Rental Marketplace</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="admin-body">
+    <!-- Admin Login Screen -->
+    <div id="adminLogin" class="admin-login">
+        <div class="login-container">
+            <div class="login-header">
+                <h1><i class="fas fa-shield-alt"></i> Admin Panel</h1>
+                <p>Rental Marketplace Administration</p>
+            </div>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label for="adminEmail">Email</label>
+                    <input type="email" id="adminEmail" value="admin@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Password</label>
+                    <input type="password" id="adminPassword" value="admin123secure" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-large">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <!-- Admin Header -->
+        <header class="admin-header">
+            <div class="admin-nav">
+                <div class="nav-brand">
+                    <h1><i class="fas fa-shield-alt"></i> Admin Panel</h1>
+                </div>
+                <div class="nav-actions">
+                    <span class="admin-user">Welcome, <span id="adminUserName">Admin</span></span>
+                    <button class="btn btn-outline btn-sm" onclick="adminLogout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="showAdminSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" onclick="showAdminSection('users')">
+                    <i class="fas fa-users"></i> Users
+                </a>
+                <a href="#" class="nav-item" onclick="showAdminSection('bookings')">
+                    <i class="fas fa-calendar-check"></i> Bookings
+                </a>
+                <a href="#" class="nav-item" onclick="showAdminSection('kyc')">
+                    <i class="fas fa-id-card"></i> KYC Verification
+                </a>
+                <a href="#" class="nav-item" onclick="showAdminSection('reviews')">
+                    <i class="fas fa-star"></i> Reviews
+                </a>
+                <a href="#" class="nav-item" onclick="showAdminSection('messages')">
+                    <i class="fas fa-envelope"></i> Messages
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <main class="admin-main">
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="admin-section active">
+                <div class="section-header">
+                    <h2>Dashboard Overview</h2>
+                    <button class="btn btn-primary" onclick="refreshStats()">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalUsers">0</h3>
+                            <p>Total Users</p>
+                            <small id="verifiedUsers">0 verified</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalItems">0</h3>
+                            <p>Total Items</p>
+                            <small id="availableItems">0 available</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalBookings">0</h3>
+                            <p>Total Bookings</p>
+                            <small id="pendingBookings">0 pending</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-naira-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalRevenue">₦0</h3>
+                            <p>Total Revenue</p>
+                            <small>All time</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalReviews">0</h3>
+                            <p>Total Reviews</p>
+                            <small id="flaggedReviews">0 flagged</small>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="totalMessages">0</h3>
+                            <p>Total Messages</p>
+                            <small id="whatsappMessages">0 WhatsApp</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-charts">
+                    <div class="chart-container">
+                        <h3>Recent Activity</h3>
+                        <div class="activity-list" id="recentActivity">
+                            <!-- Recent activity will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Users Section -->
+            <section id="usersSection" class="admin-section">
+                <div class="section-header">
+                    <h2>User Management</h2>
+                    <div class="section-filters">
+                        <select id="userStatusFilter" onchange="filterUsers()">
+                            <option value="">All Users</option>
+                            <option value="true">Verified Only</option>
+                            <option value="false">Unverified Only</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadUsers()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Verified</th>
+                                <th>Items</th>
+                                <th>Bookings</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Bookings Section -->
+            <section id="bookingsSection" class="admin-section">
+                <div class="section-header">
+                    <h2>Booking Management</h2>
+                    <div class="section-filters">
+                        <select id="bookingStatusFilter" onchange="filterBookings()">
+                            <option value="">All Bookings</option>
+                            <option value="pending">Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="active">Active</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadBookings()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Item</th>
+                                <th>Renter</th>
+                                <th>Owner</th>
+                                <th>Dates</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Bookings will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- KYC Section -->
+            <section id="kycSection" class="admin-section">
+                <div class="section-header">
+                    <h2>KYC Verification</h2>
+                    <div class="section-filters">
+                        <select id="kycStatusFilter" onchange="filterKYC()">
+                            <option value="">All KYC</option>
+                            <option value="pending">Pending</option>
+                            <option value="verified">Verified</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadKYC()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="kyc-grid" id="kycGrid">
+                    <!-- KYC documents will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section id="reviewsSection" class="admin-section">
+                <div class="section-header">
+                    <h2>Review Moderation</h2>
+                    <div class="section-filters">
+                        <select id="reviewFlagFilter" onchange="filterReviews()">
+                            <option value="">All Reviews</option>
+                            <option value="true">Flagged Only</option>
+                            <option value="false">Not Flagged</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadReviews()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="reviews-grid" id="reviewsGrid">
+                    <!-- Reviews will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Messages Section -->
+            <section id="messagesSection" class="admin-section">
+                <div class="section-header">
+                    <h2>Message Management</h2>
+                    <div class="section-filters">
+                        <select id="messageChannelFilter" onchange="filterMessages()">
+                            <option value="">All Messages</option>
+                            <option value="inbox">Inbox Only</option>
+                            <option value="whatsapp">WhatsApp Only</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="loadMessages()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="messages-list" id="messagesList">
+                    <!-- Messages will be loaded here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- KYC Review Modal -->
+    <div id="kycReviewModal" class="modal">
+        <div class="modal-content modal-large">
+            <span class="close" onclick="closeModal('kycReviewModal')">&times;</span>
+            <h2>KYC Document Review</h2>
+            <div id="kycReviewContent">
+                <!-- KYC review content will be loaded here -->
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-success" onclick="approveKYC()">
+                    <i class="fas fa-check"></i> Approve
+                </button>
+                <button class="btn btn-danger" onclick="showRejectKYC()">
+                    <i class="fas fa-times"></i> Reject
+                </button>
+            </div>
+            <div id="rejectKYCForm" class="reject-form" style="display: none;">
+                <div class="form-group">
+                    <label for="rejectReason">Rejection Reason</label>
+                    <textarea id="rejectReason" rows="3" placeholder="Please provide a reason for rejection..."></textarea>
+                </div>
+                <button class="btn btn-danger" onclick="rejectKYC()">Confirm Rejection</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="scripts/main.js"></script>
+    <script>
+        // Admin-specific JavaScript
+        let currentKYCId = null;
+
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAdminAuth();
+        });
+
+        function checkAdminAuth() {
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                // Verify token is still valid
+                fetch('/api/admin/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showAdminDashboard();
+                        loadDashboardStats();
+                    } else {
+                        showAdminLogin();
+                    }
+                })
+                .catch(() => showAdminLogin());
+            } else {
+                showAdminLogin();
+            }
+        }
+
+        function showAdminLogin() {
+            document.getElementById('adminLogin').style.display = 'flex';
+            document.getElementById('adminDashboard').style.display = 'none';
+        }
+
+        function showAdminDashboard() {
+            document.getElementById('adminLogin').style.display = 'none';
+            document.getElementById('adminDashboard').style.display = 'flex';
+        }
+
+        // Admin login form handler
+        document.getElementById('adminLoginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('adminEmail').value;
+            const password = document.getElementById('adminPassword').value;
+
+            try {
+                const response = await fetch('/api/admin/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('adminToken', data.token);
+                    localStorage.setItem('adminUser', JSON.stringify(data.user));
+                    showAdminDashboard();
+                    loadDashboardStats();
+                    showNotification('Login successful', 'success');
+                } else {
+                    showNotification(data.error || 'Login failed', 'error');
+                }
+            } catch (error) {
+                console.error('Admin login error:', error);
+                showNotification('Login failed', 'error');
+            }
+        });
+
+        function adminLogout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminUser');
+            showAdminLogin();
+            showNotification('Logged out successfully', 'success');
+        }
+
+        function showAdminSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + 'Section').classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.classList.add('active');
+            
+            // Load section data
+            switch(sectionName) {
+                case 'dashboard':
+                    loadDashboardStats();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'bookings':
+                    loadBookings();
+                    break;
+                case 'kyc':
+                    loadKYC();
+                    break;
+                case 'reviews':
+                    loadReviews();
+                    break;
+                case 'messages':
+                    loadMessages();
+                    break;
+            }
+        }
+
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/admin/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+                    }
+                });
+
+                if (response.ok) {
+                    const stats = await response.json();
+                    updateDashboardStats(stats);
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function updateDashboardStats(stats) {
+            document.getElementById('totalUsers').textContent = stats.users.total || 0;
+            document.getElementById('verifiedUsers').textContent = `${stats.users.verified || 0} verified`;
+            document.getElementById('totalItems').textContent = stats.items.total || 0;
+            document.getElementById('availableItems').textContent = `${stats.items.available || 0} available`;
+            document.getElementById('totalBookings').textContent = stats.bookings.total || 0;
+            document.getElementById('pendingBookings').textContent = `${stats.bookings.pending || 0} pending`;
+            document.getElementById('totalRevenue').textContent = `₦${(stats.bookings.total_revenue || 0).toLocaleString()}`;
+            document.getElementById('totalReviews').textContent = stats.reviews.total || 0;
+            document.getElementById('flaggedReviews').textContent = `${stats.reviews.flagged || 0} flagged`;
+            document.getElementById('totalMessages').textContent = stats.messages.total || 0;
+            document.getElementById('whatsappMessages').textContent = `${stats.messages.whatsapp || 0} WhatsApp`;
+        }
+
+        // Add more admin functions here...
+        // (loadUsers, loadBookings, loadKYC, loadReviews, loadMessages, etc.)
+    </script>
+</body>
+</html>
