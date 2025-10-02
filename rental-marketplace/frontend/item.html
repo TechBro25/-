@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Details - RentalMarket</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html"><h1><i class="fas fa-store"></i> RentalMarket</h1></a>
+                </div>
+                <nav class="nav">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="index.html#categories" class="nav-link">Categories</a>
+                    <a href="index.html#about" class="nav-link">About</a>
+                    <a href="index.html#contact" class="nav-link">Contact</a>
+                </nav>
+                <div class="header-actions">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="signupBtn" class="btn btn-primary">Sign Up</button>
+                    <div id="userMenu" class="user-menu" style="display: none;">
+                        <span id="userName"></span>
+                        <div class="dropdown">
+                            <button class="dropdown-toggle"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-menu">
+                                <a href="#" id="profileLink">Profile</a>
+                                <a href="#" id="myBookingsLink">My Bookings</a>
+                                <a href="#" id="myItemsLink">My Items</a>
+                                <a href="#" id="logoutLink">Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Item Details -->
+    <main class="item-details">
+        <div class="container">
+            <div id="itemContent">
+                <!-- Item details will be loaded here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Reviews Section -->
+    <section class="reviews-section">
+        <div class="container">
+            <h2>Reviews</h2>
+            <div id="reviewsContainer">
+                <!-- Reviews will be loaded here -->
+            </div>
+            <div id="reviewForm" style="display: none;">
+                <h3>Write a Review</h3>
+                <form id="submitReviewForm">
+                    <input type="hidden" id="reviewItemId">
+                    <input type="hidden" id="reviewBookingId">
+                    <div class="form-group">
+                        <label for="reviewRating">Rating</label>
+                        <select id="reviewRating" required>
+                            <option value="">Select Rating</option>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewTitle">Title</label>
+                        <input type="text" id="reviewTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reviewComment">Comment</label>
+                        <textarea id="reviewComment" rows="4" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Review</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>RentalMarket</h3>
+                    <p>Your trusted rental marketplace in Nigeria.</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="index.html#categories">Categories</a></li>
+                        <li><a href="index.html#about">About</a></li>
+                        <li><a href="index.html#contact">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Support</h4>
+                    <ul>
+                        <li><a href="#" id="helpLink">Help Center</a></li>
+                        <li><a href="#" id="safetyLink">Safety Guidelines</a></li>
+                        <li><a href="#" id="termsLink">Terms of Service</a></li>
+                        <li><a href="#" id="privacyLink">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contact</h4>
+                    <p><i class="fab fa-whatsapp"></i> 091-546-09327</p>
+                    <p><i class="fas fa-envelope"></i> support@rentalmarket.ng</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 RentalMarket. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Contact Button -->
+    <div class="floating-contact">
+        <button id="floatingContactBtn" class="floating-btn">
+            <i class="fas fa-comments"></i>
+        </button>
+    </div>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupFirstName">First Name</label>
+                    <input type="text" id="signupFirstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupLastName">Last Name</label>
+                    <input type="text" id="signupLastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupEmail">Email</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="signupPhone">Phone (Optional)</label>
+                    <input type="tel" id="signupPhone">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inbox Modal -->
+    <div id="inboxModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Contact Support</h2>
+            <form id="inboxForm">
+                <div class="form-group">
+                    <label for="inboxSubject">Subject</label>
+                    <input type="text" id="inboxSubject" required>
+                </div>
+                <div class="form-group">
+                    <label for="inboxMessage">Message</label>
+                    <textarea id="inboxMessage" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Rent Modal -->
+    <div id="rentModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Rent Item</h2>
+            <div id="rentItemDetails"></div>
+            <form id="rentForm">
+                <input type="hidden" id="rentItemId">
+                <div class="form-group">
+                    <label for="rentStartDate">Start Date</label>
+                    <input type="date" id="rentStartDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="rentEndDate">End Date</label>
+                    <input type="date" id="rentEndDate" required>
+                </div>
+                <div id="rentSummary"></div>
+                <button type="submit" class="btn btn-primary">Request Booking</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="scripts/main.js"></script>
+</body>
+</html>
