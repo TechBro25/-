@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - RentalHub</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="/" class="logo">🏠 RentalHub Admin</a>
+      <ul class="nav-links">
+        <li><a href="/">Main Site</a></li>
+        <li><a href="#" id="logoutLink">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Admin Container -->
+  <main class="admin-container">
+    <h1>Admin Dashboard</h1>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid" id="statsGrid">
+      <!-- Stats will be loaded here -->
+    </div>
+
+    <!-- Tabs -->
+    <div class="admin-tabs">
+      <button class="admin-tab active" data-tab="bookings">Bookings</button>
+      <button class="admin-tab" data-tab="messages">Messages</button>
+      <button class="admin-tab" data-tab="kyc">KYC Queue</button>
+      <button class="admin-tab" data-tab="reviews">Reviews</button>
+      <button class="admin-tab" data-tab="users">Users</button>
+    </div>
+
+    <!-- Tab Content -->
+    <div id="tabContent">
+      <!-- Content will be loaded dynamically -->
+    </div>
+  </main>
+
+  <script src="/scripts/main.js"></script>
+  <script>
+    let currentTab = 'bookings';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check if user is admin
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Please login as admin');
+        window.location.href = '/';
+        return;
+      }
+
+      // Load stats
+      await loadStats();
+
+      // Load initial tab
+      await loadTab('bookings');
+
+      // Tab click handlers
+      document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.addEventListener('click', async () => {
+          document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          await loadTab(tab.dataset.tab);
+        });
+      });
+
+      // Logout
+      document.getElementById('logoutLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        logout();
+        window.location.href = '/';
+      });
+    });
+
+    async function loadStats() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/admin/stats', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          displayStats(data.stats);
+        } else if (response.status === 403) {
+          alert('Admin access required');
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    function displayStats(stats) {
+      const statsGrid = document.getElementById('statsGrid');
+      statsGrid.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">${stats.totalUsers}</div>
+          <div class="stat-label">Total Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.totalItems}</div>
+          <div class="stat-label">Total Items</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.totalBookings}</div>
+          <div class="stat-label">Total Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">₦${stats.totalRevenue.toLocaleString()}</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.pendingBookings}</div>
+          <div class="stat-label">Pending Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.activeBookings}</div>
+          <div class="stat-label">Active Bookings</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${stats.pendingKyc}</div>
+          <div class="stat-label">Pending KYC</div>
+        </div>
+      `;
+    }
+
+    async function loadTab(tabName) {
+      currentTab = tabName;
+      const token = localStorage.getItem('token');
+      const tabContent = document.getElementById('tabContent');
+
+      try {
+        let content = '';
+
+        switch(tabName) {
+          case 'bookings':
+            const bookingsRes = await fetch('/api/admin/bookings', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const bookingsData = await bookingsRes.json();
+            content = renderBookingsTable(bookingsData.bookings);
+            break;
+
+          case 'messages':
+            const messagesRes = await fetch('/api/admin/messages', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const messagesData = await messagesRes.json();
+            content = renderMessagesTable(messagesData.messages);
+            break;
+
+          case 'kyc':
+            const kycRes = await fetch('/api/admin/kyc', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const kycData = await kycRes.json();
+            content = renderKycTable(kycData.kycDocuments);
+            break;
+
+          case 'reviews':
+            const reviewsRes = await fetch('/api/admin/reviews', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const reviewsData = await reviewsRes.json();
+            content = renderReviewsTable(reviewsData.reviews);
+            break;
+
+          case 'users':
+            const usersRes = await fetch('/api/admin/users', {
+              headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const usersData = await usersRes.json();
+            content = renderUsersTable(usersData.users);
+            break;
+        }
+
+        tabContent.innerHTML = content;
+      } catch (error) {
+        console.error('Error loading tab:', error);
+        tabContent.innerHTML = '<p class="alert alert-error">Error loading data</p>';
+      }
+    }
+
+    function renderBookingsTable(bookings) {
+      if (!bookings || bookings.length === 0) {
+        return '<p>No bookings found</p>';
+      }
+
+      return `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Item</th>
+                <th>Renter</th>
+                <th>Owner</th>
+                <th>Dates</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${bookings.map(b => `
+                <tr>
+                  <td>#${b.id}</td>
+                  <td>${b.item_title}</td>
+                  <td>${b.renter_name}<br><small>${b.renter_email}</small></td>
+                  <td>${b.owner_name}<br><small>${b.owner_email}</small></td>
+                  <td>${b.start_date} to ${b.end_date}</td>
+                  <td>₦${b.total_price.toLocaleString()}</td>
+                  <td><span class="status-badge status-${b.status}">${b.status}</span></td>
+                  <td><span class="status-badge status-${b.payment_status}">${b.payment_status}</span></td>
+                  <td>
+                    ${b.status === 'pending' ? `
+                      <button class="btn btn-success" onclick="updateBookingStatus(${b.id}, 'approved')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Approve</button>
+                    ` : ''}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderMessagesTable(messages) {
+      if (!messages || messages.length === 0) {
+        return '<p>No messages found</p>';
+      }
+
+      return `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Channel</th>
+                <th>From</th>
+                <th>To</th>
+                <th>Subject</th>
+                <th>Message</th>
+                <th>Date</th>
+                <th>Read</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${messages.map(m => `
+                <tr>
+                  <td>#${m.id}</td>
+                  <td><span class="status-badge status-${m.channel === 'whatsapp' ? 'success' : 'primary'}">${m.channel}</span></td>
+                  <td>${m.sender_name || m.sender_phone || 'Unknown'}</td>
+                  <td>${m.receiver_name || 'Support'}</td>
+                  <td>${m.subject || '-'}</td>
+                  <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${m.body}</td>
+                  <td>${new Date(m.created_at).toLocaleString('en-NG')}</td>
+                  <td>${m.is_read ? '✓' : '✗'}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderKycTable(kycDocs) {
+      if (!kycDocs || kycDocs.length === 0) {
+        return '<p>No pending KYC verifications</p>';
+      }
+
+      return `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Phone</th>
+                <th>Code</th>
+                <th>Status</th>
+                <th>Sent At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${kycDocs.map(k => `
+                <tr>
+                  <td>#${k.id}</td>
+                  <td>${k.full_name}<br><small>${k.email}</small></td>
+                  <td>${k.phone}</td>
+                  <td><strong>${k.verification_code}</strong></td>
+                  <td><span class="status-badge status-${k.status}">${k.status}</span></td>
+                  <td>${new Date(k.code_sent_at).toLocaleString('en-NG')}</td>
+                  <td>
+                    <button class="btn btn-success" onclick="updateKycStatus(${k.id}, 'verified')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Verify</button>
+                    <button class="btn btn-danger" onclick="updateKycStatus(${k.id}, 'rejected')" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Reject</button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderReviewsTable(reviews) {
+      if (!reviews || reviews.length === 0) {
+        return '<p>No reviews found</p>';
+      }
+
+      return `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Item</th>
+                <th>User</th>
+                <th>Rating</th>
+                <th>Comment</th>
+                <th>Date</th>
+                <th>Flagged</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${reviews.map(r => `
+                <tr>
+                  <td>#${r.id}</td>
+                  <td>${r.item_title}</td>
+                  <td>${r.user_name}<br><small>${r.user_email}</small></td>
+                  <td>${'⭐'.repeat(r.rating)}</td>
+                  <td style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.comment || '-'}</td>
+                  <td>${new Date(r.created_at).toLocaleDateString('en-NG')}</td>
+                  <td>${r.is_flagged ? '🚩' : '✓'}</td>
+                  <td>
+                    ${!r.is_flagged ? `
+                      <button class="btn btn-danger" onclick="flagReview(${r.id}, true)" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Flag</button>
+                    ` : `
+                      <button class="btn btn-success" onclick="flagReview(${r.id}, false)" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">Unflag</button>
+                    `}
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderUsersTable(users) {
+      if (!users || users.length === 0) {
+        return '<p>No users found</p>';
+      }
+
+      return `
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Verified</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${users.map(u => `
+                <tr>
+                  <td>#${u.id}</td>
+                  <td>${u.full_name}</td>
+                  <td>${u.email}</td>
+                  <td>${u.phone || '-'}</td>
+                  <td><span class="status-badge status-${u.role === 'admin' ? 'danger' : 'primary'}">${u.role}</span></td>
+                  <td>${u.is_verified ? '✓ Verified' : '✗ Not verified'}</td>
+                  <td>${new Date(u.created_at).toLocaleDateString('en-NG')}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    async function updateBookingStatus(id, status) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`/api/admin/bookings/${id}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status })
+        });
+
+        if (response.ok) {
+          alert('Booking updated successfully');
+          await loadTab(currentTab);
+        } else {
+          alert('Failed to update booking');
+        }
+      } catch (error) {
+        console.error('Error updating booking:', error);
+        alert('Error updating booking');
+      }
+    }
+
+    async function updateKycStatus(id, status) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`/api/admin/kyc/${id}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ status })
+        });
+
+        if (response.ok) {
+          alert('KYC updated successfully');
+          await loadTab(currentTab);
+          await loadStats();
+        } else {
+          alert('Failed to update KYC');
+        }
+      } catch (error) {
+        console.error('Error updating KYC:', error);
+        alert('Error updating KYC');
+      }
+    }
+
+    async function flagReview(id, flagged) {
+      const token = localStorage.getItem('token');
+      try {
+        const response = await fetch(`/api/admin/reviews/${id}/flag`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ flagged })
+        });
+
+        if (response.ok) {
+          alert(flagged ? 'Review flagged' : 'Review unflagged');
+          await loadTab(currentTab);
+        } else {
+          alert('Failed to update review');
+        }
+      } catch (error) {
+        console.error('Error updating review:', error);
+        alert('Error updating review');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RentalHub - Rent Anything, Anytime</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <nav class="navbar">
+      <a href="/" class="logo">🏠 RentalHub</a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="/">Browse</a></li>
+        <li><a href="#" id="myBookingsLink">My Bookings</a></li>
+        <li><a href="#" id="listItemLink">List Item</a></li>
+        <li><a href="#" id="authLink">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Rent Anything, Anytime</h1>
+    <p>From wedding tents to cameras, find everything you need in Nigeria</p>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search for items...">
+      <button class="btn btn-primary" onclick="searchItems()">Search</button>
+    </div>
+  </section>
+
+  <!-- Main Container -->
+  <main class="container">
+    <!-- Categories -->
+    <div class="categories" id="categoriesContainer">
+      <div class="category-badge active" data-category="">All</div>
+      <div class="category-badge" data-category="Event Equipment">Event Equipment</div>
+      <div class="category-badge" data-category="Photography">Photography</div>
+      <div class="category-badge" data-category="Vehicles">Vehicles</div>
+      <div class="category-badge" data-category="Power Equipment">Power Equipment</div>
+      <div class="category-badge" data-category="Party Supplies">Party Supplies</div>
+      <div class="category-badge" data-category="Cleaning Equipment">Cleaning Equipment</div>
+    </div>
+
+    <!-- Items Grid -->
+    <div id="loadingSpinner" class="loading hidden">
+      <div class="spinner"></div>
+    </div>
+    
+    <div class="items-grid" id="itemsGrid">
+      <!-- Items will be loaded here dynamically -->
+    </div>
+  </main>
+
+  <!-- Contact Support Button -->
+  <button class="contact-support" onclick="openSupportModal()">
+    📞 Contact Support
+  </button>
+
+  <!-- Auth Modal -->
+  <div class="modal" id="authModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+      <h2 id="authModalTitle">Login</h2>
+      <div id="authError" class="alert alert-error hidden"></div>
+      <form id="authForm">
+        <div class="form-group" id="fullNameGroup" style="display: none;">
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+        <div class="form-group" id="phoneGroup" style="display: none;">
+          <label>Phone (optional)</label>
+          <input type="tel" id="phone" placeholder="08012345678">
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;">
+          <span id="authButtonText">Login</span>
+        </button>
+      </form>
+      <p class="text-center">
+        <a href="#" id="toggleAuthMode">Don't have an account? Sign up</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Support Modal -->
+  <div class="modal" id="supportModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('supportModal')">&times;</button>
+      <h2>Contact Support</h2>
+      <p class="mb-3">Choose how you'd like to reach us:</p>
+      
+      <div style="display: grid; gap: 1rem;">
+        <button class="btn btn-primary" onclick="openInboxModal()">
+          📨 Send Inbox Message
+        </button>
+        <a href="https://wa.me/2349154609327?text=Hello%2C%20I%20need%20support%20with%20RentalHub" 
+           class="btn btn-success" 
+           target="_blank"
+           style="text-align: center;">
+          💬 WhatsApp: 091-546-09327
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inbox Modal -->
+  <div class="modal" id="inboxModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal('inboxModal')">&times;</button>
+      <h2>Send Message</h2>
+      <div id="inboxSuccess" class="alert alert-success hidden"></div>
+      <div id="inboxError" class="alert alert-error hidden"></div>
+      <form id="inboxForm">
+        <div class="form-group">
+          <label>Subject</label>
+          <input type="text" id="messageSubject" placeholder="Enter subject" required>
+        </div>
+        <div class="form-group">
+          <label>Message</label>
+          <textarea id="messageBody" rows="5" placeholder="Enter your message" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <script src="/scripts/main.js"></script>
+  <script>
+    // Load items on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadItems();
+      updateNavigation();
+      
+      // Category filter
+      document.querySelectorAll('.category-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+          document.querySelectorAll('.category-badge').forEach(b => b.classList.remove('active'));
+          badge.classList.add('active');
+          const category = badge.dataset.category;
+          loadItems(category);
+        });
+      });
+      
+      // Auth modal toggle
+      document.getElementById('toggleAuthMode').addEventListener('click', (e) => {
+        e.preventDefault();
+        toggleAuthMode();
+      });
+      
+      // Auth form submit
+      document.getElementById('authForm').addEventListener('submit', handleAuth);
+      
+      // Inbox form submit
+      document.getElementById('inboxForm').addEventListener('submit', sendInboxMessage);
+      
+      // Auth link
+      document.getElementById('authLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        const token = localStorage.getItem('token');
+        if (token) {
+          logout();
+        } else {
+          openModal('authModal');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
